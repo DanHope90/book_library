@@ -6,4 +6,12 @@ const router = express.Router();
 
 router.route('/').post(readerController.createReader);
 
-module.exports = router; 
+router.route('/').get(readerController.findReader);
+
+router.route('/:readerId').get(readerController.findByPk);
+
+router.route('/:readerId').patch(readerController.updateReader);
+
+router.route('/:readerId').delete(readerController.deleteReader);
+
+module.exports = router;

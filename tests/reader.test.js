@@ -18,6 +18,7 @@ describe('/readers', () => {
         const response = await request(app).post('/readers').send({
           name: 'Elizabeth Bennet',
           email: 'future_ms_darcy@gmail.com',
+          password: 'darcy12345',
         });
         const newReaderRecord = await Reader.findByPk(response.body.id, {
           raw: true,
@@ -25,8 +26,113 @@ describe('/readers', () => {
 
         expect(response.status).to.equal(201);
         expect(response.body.name).to.equal('Elizabeth Bennet');
+        expect(response.body.password).to.equal('darcy12345');
         expect(newReaderRecord.name).to.equal('Elizabeth Bennet');
         expect(newReaderRecord.email).to.equal('future_ms_darcy@gmail.com');
+      });
+
+      it('sends error if there is no name', async () => {
+        const response = await request(app).post('/readers').send({
+          name: '',
+          email: 'future_ms_darcy@gmail.com',
+          password: 'darcy12345',
+        });
+        const newReaderRecord = await Reader.findByPk(response.body.id, {
+          raw: true,
+        });
+        expect(response.status).to.equal(500);
+        expect(newReaderRecord).to.equal(null);
+      });
+
+      it('sends error if name is null', async () => {
+        const response = await request(app).post('/readers').send({
+          name: null,
+          email: 'datboi@gmail.com',
+          password: '12345678',
+        });
+        const newReaderRecord = await Reader.findByPk(response.body.id, {
+          raw: true,
+        });
+        expect(response.status).to.equal(500);
+        expect(newReaderRecord).to.equal(null);
+      });
+      it('sends error if email is empty', async () => {
+        const response = await request(app).post('/readers').send({
+          name: 'Dat Boi',
+          email: '',
+          password: '12345678',
+        });
+        const newReaderRecord = await Reader.findByPk(response.body.id, {
+          raw: true,
+        });
+        expect(response.status).to.equal(500);
+        expect(response.body.email).to.equal();
+        expect(newReaderRecord).to.equal(null);
+      });
+      it('sends error if email is null', async () => {
+        const response = await request(app).post('/readers').send({
+          name: 'Dat Boi',
+          email: null,
+          password: '12345678',
+        });
+        const newReaderRecord = await Reader.findByPk(response.body.id, {
+          raw: true,
+        });
+        expect(response.status).to.equal(500);
+        expect(response.body.email).to.equal(undefined);
+        expect(newReaderRecord).to.equal(null);
+      });
+      it('sends error if email not a valid email', async () => {
+        const response = await request(app).post('/readers').send({
+          name: 'Dat Boi',
+          email: 'datboigmail.com',
+          password: '12345678',
+        });
+        const newReaderRecord = await Reader.findByPk(response.body.id, {
+          raw: true,
+        });
+        expect(response.status).to.equal(500);
+        expect(response.body.email).to.equal(undefined);
+        expect(newReaderRecord).to.equal(null);
+      });
+      it('sends error if password is empty', async () => {
+        const response = await request(app).post('/readers').send({
+          name: 'Dat Boi',
+          email: 'datboi@gmail.com',
+          password: '',
+        });
+        const newReaderRecord = await Reader.findByPk(response.body.id, {
+          raw: true,
+        });
+        expect(response.status).to.equal(500);
+        expect(response.body.password).to.equal();
+        expect(newReaderRecord).to.equal(null);
+      });
+      it('sends error if password is null', async () => {
+        const response = await request(app).post('/readers').send({
+          name: 'Dat Boi',
+          email: 'datboi@gmail.com',
+          password: null,
+        });
+        const newReaderRecord = await Reader.findByPk(response.body.id, {
+          raw: true,
+        });
+        expect(response.status).to.equal(500);
+        expect(response.body.password).to.equal(undefined);
+        expect(newReaderRecord).to.equal(null);
+      });
+      it('error if password length is less that 8', async () => {
+        const response = await request(app).post('/readers').send({
+          name: 'Dat Boi',
+          email: 'datboi@gmail.com',
+          password: '123456',
+        });
+        const newReaderRecord = await Reader.findByPk(response.body.id, {
+          raw: true,
+        });
+        expect(response.status).to.equal(500);
+        expect(response.body.password).to.equal(undefined);
+        expect(newReaderRecord).to.equal(null);
       });
     });
   });
@@ -39,9 +145,10 @@ describe('/readers', () => {
         Reader.create({
           name: 'Elizabeth Bennet',
           email: 'future_ms_darcy@gmail.com',
+          password: 'darcy12345',
         }),
-        Reader.create({ name: 'Arya Stark', email: 'vmorgul@me.com' }),
-        Reader.create({ name: 'Lyra Belacqua', email: 'darknorth123@msn.org' }),
+        Reader.create({ name: 'Arya Stark', email: 'vmorgul@me.com', password: '12345678' }),
+        Reader.create({ name: 'Lyra Belacqua', email: 'darknorth123@msn.org', password: '12345678' }),
       ]);
     });
 
@@ -106,11 +213,13 @@ describe('/readers', () => {
     describe('DELETE /readers/:id', () => {
       it('deletes reader record by id', async () => {
         const reader = readers[0];
+        const preReaderCheck = await Reader.findByPk(reader.id, { raw: true });
         const response = await request(app).delete(`/readers/${reader.id}`);
         const deletedReader = await Reader.findByPk(reader.id, { raw: true });
 
         expect(response.status).to.equal(204);
         expect(deletedReader).to.equal(null);
+        expect(!!preReaderCheck).to.equal(true);
       });
 
       it('returns a 404 if the reader does not exist', async () => {

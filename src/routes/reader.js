@@ -4,14 +4,14 @@ const readerController = require('../controllers/reader');
 
 const router = express.Router();
 
-router.route('/').post(readerController.createReader);
+router.post('/', readerController.createReader);
 
-router.route('/').get(readerController.findReader);
+router.get('/', readerController.findReader);
 
-router.route('/:readerId').get(readerController.findByPk);
+router.get('/:readerId', readerController.findByPk);
 
-router.route('/:readerId').patch(readerController.updateReader);
+router.patch('/:readerId', readerController.updateReader);
 
-router.route('/:readerId').delete(readerController.deleteReader);
+router.delete('/:readerId', readerController.deleteReader);
 
 module.exports = router;

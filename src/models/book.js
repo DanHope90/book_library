@@ -1,0 +1,37 @@
+module.exports = (connection, DataTypes) => {
+  const schema = {
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      valiidate: {
+        notNull: {
+          args: [true],
+          msg: 'Please enter book title.',
+        },
+        notEmpty: {
+          args: [true],
+          msg: 'Please enter book title.',
+        },
+      },
+    },
+    auther: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          args: [true],
+          msg: 'Please enter book title',
+        },
+        notEmpty: {
+          args: [true],
+          msg: 'Please enter book title.',
+        },
+      },
+    },
+    genre: DataTypes.STRING,
+    ISBN: DataTypes.STRING,
+  };
+
+  const BookModel = connection.define('Book', schema);
+  return BookModel;
+};

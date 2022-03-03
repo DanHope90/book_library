@@ -1,12 +1,15 @@
 const express = require('express');
-const res = require('express/lib/response');
 const { Reader } = require('../models');
 
 const createReader = async (req, res) => {
   const data = req.body;
-  const newReader = await Reader.create(data);
 
-  res.status(201).json(newReader);
+  try {
+    const newReader = await Reader.create(data);
+    res.status(201).json(newReader);
+  } catch (err) {
+    res.sendStatus(500).json(err);
+  }
 };
 
 const findReader = async (req, res) => {

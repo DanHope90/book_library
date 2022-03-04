@@ -14,7 +14,7 @@ module.exports = (connection, DataTypes) => {
         },
       },
     },
-    auther: {
+    author: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {

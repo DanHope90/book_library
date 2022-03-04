@@ -4,6 +4,12 @@ const bookController = require('../controllers/book');
 
 const router = express.Router();
 
-router.get('/:bookId', bookController.findBook);
+router.post('/', bookController.createBook);
+
+router.get('/', bookController.getBooks);
+
+router.get('/:bookId', bookController.getBookId);
+
+router.patch('/:bookid', bookController.updateBook);
 
 module.exports = router;

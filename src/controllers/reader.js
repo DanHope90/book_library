@@ -1,4 +1,3 @@
-const express = require('express');
 const { Reader } = require('../models');
 
 const createReader = async (req, res) => {

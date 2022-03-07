@@ -1,4 +1,3 @@
-/* eslint-disable no-shadow */
 /* eslint-disable indent */
 /* eslint-disable no-undef */
 const { expect } = require('chai');
@@ -123,7 +122,7 @@ describe('with books in the database', () => {
       });
 
   describe('PATCH /books/:id', () => {
-    it.only('updates books title by id', async () => {
+    it('updates books title by id', async () => {
       const book = books[0];
       const response = await request(app)
         .patch(`/book/${book.id}`)
@@ -136,10 +135,28 @@ describe('with books in the database', () => {
       expect(updatedBookRecord.title).to.equal('Jurrasic Park');
     });
 
-    it.only('returns a 404 if the book does not exist', async () => {
+    it('returns a 404 if the book does not exist', async () => {
       const response = await request(app)
         .patch('/book/12345')
         .send({ title: 'Jurrasic Park' });
+      expect(response.status).to.equal(404);
+      expect(response.body.error).to.equal('The book could not be found.');
+    });
+  });
+
+  describe('DELETE / readers/:id', () => {
+    it('deletes book record by id', async () => {
+      const book = books[0];
+      const preBookCheck = await Book.findByPk(book.id, { raw: true });
+      const response = await request(app).delete(`/book/${book.id}`);
+      const deletedBook = await Book.findByPk(book.id, { raw: true });
+
+      expect(response.status).to.equal(204);
+      expect(deletedBook).to.equal(null);
+      expect(!!preBookCheck).to.equal(true);
+    });
+    it('returns a 404 if the book does not exist', async () => {
+      const response = await request(app).delete('/book/12345');
       expect(response.status).to.equal(404);
       expect(response.body.error).to.equal('The book could not be found.');
     });

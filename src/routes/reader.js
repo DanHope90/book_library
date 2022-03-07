@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/', readerController.createReader);
 
-router.get('/', readerController.findReader);
+router.get('/', readerController.getReaders);
 
 router.get('/:readerId', readerController.findByPk);
 

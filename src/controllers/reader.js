@@ -1,15 +1,15 @@
 const { Reader } = require('../models');
-const { createItem, getAllItems, deleteItem } = require('./helper');
+const { createItem, getAllItems } = require('./helper');
 
 const createReader = (req, res) => createItem(res, 'reader', req.body);
 
 const getReaders = (req, res) => getAllItems(res, 'reader');
 
-//const updateReader = (req, res) => updateItem(res, 'reader', req.body, req.params.id
+//const updateReader = (req, res) => updateItem(res, 'reader', req.body, req.params.id)
 
 //const deleteReader = (req, res) => deleteItem(res, 'reader', req.body, req.params);
 
-const findByPk = async (req, res) => {
+const getReaderById = async (req, res) => {
   const { readerId } = req.params;
   const reader = await Reader.findByPk(readerId);
 
@@ -43,4 +43,4 @@ const deleteReader = async (req, res) => {
   }
 };
 
-module.exports = { createReader, getReaders, findByPk, updateReader, deleteReader };
+module.exports = { createReader, getReaders, getReaderById, updateReader, deleteReader };

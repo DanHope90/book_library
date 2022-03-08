@@ -12,13 +12,22 @@ const getModel = (model) => {
   return models[model];
 };
 
+const removePassword = (obj) => {
+    if (obj.hasOwnProperty('password')) {
+      delete obj.password;
+    }
+  
+    return obj;
+  };
+
 const createItem = async (res, model, item) => {
   const Model = getModel(model);
 
   try {
     const newItem = await Model.create(item);
+    const itemWithoutPassword = removePassword(newItem.get());
 
-    res.status(201).json(newItem);
+    res.status(201).json(itemWithoutPassword);
   } catch (error) {
     const errorMessages = error.errors.map((e) => e.messages);
 
@@ -26,12 +35,32 @@ const createItem = async (res, model, item) => {
   }
 };
 
-const getAllItems = async (res, model, item) => {
-const Model = getModel(model);
-const allItems = await Model.findAll(item);
+const getAllItems = (res, model) => {
+  const Model = getModel(model);
 
-res.status(200).json(allItems);
-};
+  return Model.findAll().then((items) => {
+    const itemsWithoutPassword = items.map((item) =>
+      removePassword(item.dataValues)
+    );
+      res.status(200).json(itemsWithoutPassword);
+    });
+  };
+
+  const updateItem = (res, model, item, id) => {
+    const Model = getModel(model);
+    return Model.update(item, { where: { id } }).then(([recordsUpdated]) => {
+      if (!recordsUpdated) {
+        res.status(404).json(get404Error(model));
+      } else {
+        getModel(model)
+          .findByPk(id)
+          .then((updatedItem) => {
+            const itemWithoutPassword = removePassword(updatedItem.dataValues);
+            res.status(200).json(itemWithoutPassword);
+          });
+      }
+    });
+  };
 
 // both update item & deleteItem timeout
 
@@ -59,4 +88,4 @@ res.status(200).json(allItems);
 //   }
 // };
 
-module.exports = { createItem, getAllItems };
+module.exports = { createItem, getAllItems, updateItem };

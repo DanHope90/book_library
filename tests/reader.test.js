@@ -26,9 +26,10 @@ describe('/readers', () => {
 
         expect(response.status).to.equal(201);
         expect(response.body.name).to.equal('Elizabeth Bennet');
-        expect(response.body.password).to.equal('darcy12345');
+        expect(response.body.password).to.equal(undefined);
         expect(newReaderRecord.name).to.equal('Elizabeth Bennet');
         expect(newReaderRecord.email).to.equal('future_ms_darcy@gmail.com');
+        expect(newReaderRecord.password).to.equal('darcy12345');
       });
 
       it('sends error if there is no name', async () => {
@@ -172,6 +173,7 @@ describe('/readers', () => {
 
           expect(reader.name).to.equal(expected.name);
           expect(reader.email).to.equal(expected.email);
+          expect(reader.password).to.equal(undefined);
         });
       });
     });

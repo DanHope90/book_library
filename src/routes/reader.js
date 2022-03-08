@@ -8,7 +8,7 @@ router.post('/', readerController.createReader);
 
 router.get('/', readerController.getReaders);
 
-router.get('/:readerId', readerController.findByPk);
+router.get('/:readerId', readerController.getReaderById);
 
 router.patch('/:readerId', readerController.updateReader);
 

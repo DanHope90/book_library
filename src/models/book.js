@@ -3,7 +3,7 @@ module.exports = (connection, DataTypes) => {
     title: {
       type: DataTypes.STRING,
       allowNull: false,
-      valiidate: {
+      validate: {
         notNull: {
           args: [true],
           msg: 'Please enter book title.',

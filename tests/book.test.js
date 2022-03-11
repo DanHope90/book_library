@@ -18,7 +18,6 @@ describe('/books', () => {
         const response = await request(app).post('/book').send({
           title: 'IT',
           author: 'Stephen King',
-          genre: 'Horror',
           ISBN: '12345',
         });
         const newBookRecord = await Book.findByPk(response.body.id, {
@@ -30,11 +29,10 @@ describe('/books', () => {
         expect(response.body.author).to.equal('Stephen King');
         expect(newBookRecord.title).to.equal('IT');
         expect(newBookRecord.author).to.equal('Stephen King');
-        expect(newBookRecord.genre).to.equal('Horror');
         expect(newBookRecord.ISBN).to.equal('12345');
       });
 
-      it('cannot create book if there is not auther or title', async () => {
+      it('cannot create book if there is not author or title', async () => {
         const response = await request(app).post('/book').send({});
         const newBookRecord = await Book.findByPk(response.body.id, {
           raw: true,
@@ -57,20 +55,15 @@ describe('with books in the database', () => {
         Book.create({
           title: 'IT',
           author: 'Stephen King',
-          genre: 'Horror',
-          ISBN: 'sdkjfs',
+
         }),
         Book.create({
           title: 'The Hobbit',
           author: 'J.R.R Tolkien',
-          genre: 'Fantasy',
-          ISBN: 'sdfsdff',
         }),
         Book.create({
           title: 'Lord of the Rings',
           author: 'J.R.R Tolkien',
-          genre: 'Fantasy',
-          ISBN: 'sdfdsfsdfs',
         }),
       ]);
   });
@@ -87,8 +80,6 @@ describe('with books in the database', () => {
 
               expect(book.title).to.equal(expected.title);
               expect(book.author).to.equal(expected.author);
-              expect(book.genre).to.equal(expected.genre);
-              expect(book.ISBN).to.equal(expected.ISBN);
           });
       });
   });
@@ -96,7 +87,6 @@ describe('with books in the database', () => {
     it('gets book title by id', async () => {
       const book = books[0];
       const response = await request(app).get(`/book/${book.id}`);
-
       expect(response.status).to.equal(200);
       expect(response.body.title).to.equal(book.title);
       expect(response.body.author).to.equal(book.author);
@@ -126,19 +116,19 @@ describe('with books in the database', () => {
       const book = books[0];
       const response = await request(app)
         .patch(`/book/${book.id}`)
-        .send({ title: 'Jurrasic Park' });
+        .send({ title: 'Jurassic Park' });
       const updatedBookRecord = await Book.findByPk(book.id, {
         raw: true,
       });
 
       expect(response.status).to.equal(200);
-      expect(updatedBookRecord.title).to.equal('Jurrasic Park');
+      expect(updatedBookRecord.title).to.equal('Jurassic Park');
     });
 
     it('returns a 404 if the book does not exist', async () => {
       const response = await request(app)
         .patch('/book/12345')
-        .send({ title: 'Jurrasic Park' });
+        .send({ title: 'Jurassic Park' });
       expect(response.status).to.equal(404);
       expect(response.body.error).to.equal('The book could not be found.');
     });
